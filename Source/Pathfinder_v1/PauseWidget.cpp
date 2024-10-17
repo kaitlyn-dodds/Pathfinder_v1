@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PathfinderPlayerController.h"
 #include "PauseWidget.h"
+#include "PathfinderPlayerController.h"
 
 void UPauseWidget::NativeConstruct()
 {
@@ -13,18 +13,17 @@ void UPauseWidget::NativeConstruct()
 
 void UPauseWidget::OnResumeBtnClicked()
 {
-	UE_LOG(LogTemp, Display, TEXT("Clicked the resume button!"));
 	GetPlayerController()->PauseGame();
 }
 
 void UPauseWidget::OnRestartBtnClicked()
 {
-	UE_LOG(LogTemp, Display, TEXT("Pressed restart"));
+	GetPlayerController()->RestartGame();
 }
 
 void UPauseWidget::OnExitToMainMenuBtnClicked()
 {
-	UE_LOG(LogTemp, Display, TEXT("Pressed Exit to Main Menu"));
+	GetPlayerController()->ExitToMainMenu();
 }
 
 void UPauseWidget::OnExitBtnClicked()

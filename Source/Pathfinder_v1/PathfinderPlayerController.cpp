@@ -2,13 +2,16 @@
 
 
 
-#include "PauseWidget.h"
 #include "PathfinderPlayerController.h"
+#include "PauseWidget.h"
 
-// add PauseGameMethod 
-// pause game time 
-// switch input to UI only
-// set mouse visible?
+void APathfinderPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	SetInputMode(FInputModeGameOnly());
+	bShowMouseCursor = false;
+}
 
 void APathfinderPlayerController::PauseGame()
 {
@@ -65,16 +68,24 @@ void APathfinderPlayerController::PauseGame()
 
 void APathfinderPlayerController::RestartGame()
 {
+	FString MapName = GetWorld()->GetMapName();
+	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 
+	UGameplayStatics::OpenLevel(
+		GetWorld(), 
+		FName(MapName),
+		true, 
+		""
+	);
 }
 
 void APathfinderPlayerController::ExitToMainMenu()
 {
-
+	// load MainMenu level 
+	UGameplayStatics::OpenLevel(GetWorld(), "MainMenu", false, "");
 }
 
 void APathfinderPlayerController::ExitGame()
 {
-	UE_LOG(LogTemp, Display, TEXT("Quiting game..."));
 	UKismetSystemLibrary::QuitGame(GetWorld(), this, EQuitPreference::Quit, false);
 }

@@ -26,6 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UPauseWidget> PauseWidgetClass;
 
+	virtual void OnPossess(APawn* aPawn) override;
+
 public:
 
 	UFUNCTION(BlueprintCallable)

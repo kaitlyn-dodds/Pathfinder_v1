@@ -9,7 +9,7 @@ void APathfinderPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	//SetInputMode(FInputModeGameOnly());
+	SetInputMode(FInputModeGameOnly());
 	bShowMouseCursor = true;
 
 }

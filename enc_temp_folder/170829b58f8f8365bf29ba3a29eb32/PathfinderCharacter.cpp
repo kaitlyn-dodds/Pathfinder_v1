@@ -52,9 +52,6 @@ void APathfinderCharacter::BeginPlay()
 	{
 		FollowCamera->SetWorldRotation(FRotator(-35.f, 0.f, 0.f));
 	}
-
-	// Set target location to starting position
-	TargetLocation = GetActorLocation();
 	
 }
 
@@ -62,14 +59,6 @@ void APathfinderCharacter::BeginPlay()
 void APathfinderCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// If Character not at target location
-	if (TargetLocation != FVector::ZeroVector && !TargetLocation.Equals(GetActorLocation(), 0.0001f))
-	{
-		UE_LOG(LogTemp, Display, TEXT("Not at target, moving..."));
-		UE_LOG(LogTemp, Display, TEXT("Target Location: %s"), *TargetLocation.GetSafeNormal().ToString());
-		UE_LOG(LogTemp, Display, TEXT("Current Location: %s"), *GetActorLocation().GetSafeNormal().ToString());
-	}
 
 	/*if (PlayerController)
 	{
@@ -117,7 +106,7 @@ void APathfinderCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Mouse Click
-		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Triggered, this, &APathfinderCharacter::MouseClick);
+		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Completed, this, &APathfinderCharacter::MouseClick);
 
 	}
 }
@@ -125,34 +114,4 @@ void APathfinderCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void APathfinderCharacter::MouseClick(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Display, TEXT("Click click click"));
-
-	if (PlayerController)
-	{
-		// Capture mouse down location
-		FHitResult HitResults;
-		PlayerController->GetHitResultUnderCursor(
-			ECollisionChannel::ECC_Visibility,
-			false,
-			HitResults
-		);
-
-		if (HitResults.bBlockingHit)
-		{
-			DrawDebugSphere(
-				GetWorld(),
-				HitResults.ImpactPoint,
-				10.f,
-				12,
-				FColor::Blue,
-				true,
-				0.f
-			);
-
-			UE_LOG(LogTemp, Display, TEXT("Updating target location"));
-			TargetLocation = HitResults.ImpactPoint;
-		}
-	}
-
-	// Update target location
-
 }

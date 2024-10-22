@@ -48,8 +48,6 @@ private:
 
 	APathfinderPlayerController* PlayerController;
 
-	FVector TargetLocation;
-
 	/* Mapping Context */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* PathfinderMappingContext;

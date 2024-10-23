@@ -23,7 +23,11 @@ APathfinderCharacter::APathfinderCharacter()
 	CameraBoom->TargetArmLength = 400.f;
 	CameraBoom->TargetOffset = FVector(0.f, 0.f, 400.f);
 	CameraBoom->SocketOffset = FVector(0.f, 0.f, 0.f);
-	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bInheritPitch = false;
+	CameraBoom->bInheritYaw = true;
+	CameraBoom->bInheritRoll = false;
 
 	// Setup and attach camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
@@ -66,46 +70,20 @@ void APathfinderCharacter::Tick(float DeltaTime)
 	// If Character not at target location
 	if (TargetLocation != FVector::ZeroVector && !TargetLocation.Equals(GetActorLocation(), 0.0001f))
 	{
-		UE_LOG(LogTemp, Display, TEXT("Not at target, moving..."));
-		UE_LOG(LogTemp, Display, TEXT("Target Location: %s"), *TargetLocation.GetSafeNormal().ToString());
-		UE_LOG(LogTemp, Display, TEXT("Current Location: %s"), *GetActorLocation().GetSafeNormal().ToString());
+		//UE_LOG(LogTemp, Display, TEXT("Not at target, moving..."));
+
+		//UE_LOG(LogTemp, Display, TEXT("Target: %s"), *TargetLocation.ToString());
+		//UE_LOG(LogTemp, Display, TEXT("Actor: %s"), *GetActorLocation().ToString());
+		
+		FVector Direction = (TargetLocation - GetActorLocation()).GetSafeNormal();
+
+		AddMovementInput(Direction);
+
+		FRotator NewRotation = Direction.Rotation();
+		FRotator CurrentRotation = GetActorRotation();
+
+		SetActorRotation(FRotator(CurrentRotation.Pitch, NewRotation.Yaw, CurrentRotation.Roll));
 	}
-
-	/*if (PlayerController)
-	{
-		FHitResult HitResults;
-		PlayerController->GetHitResultUnderCursor(
-			ECollisionChannel::ECC_Visibility,
-			false, 
-			HitResults
-		);
-
-		if (HitResults.bBlockingHit)
-		{
-			DrawDebugSphere(
-				GetWorld(),
-				HitResults.ImpactPoint,
-				10.f,
-				12,
-				FColor::Blue,
-				true,
-				0.f
-			);
-
-			if (CameraBoom)
-			{
-				UE_LOG(LogTemp, Display, TEXT("Trying to move camera boom: %s"), *HitResults.ImpactPoint.ToString());
-				FVector CurrentLocation = CameraBoom->GetComponentLocation();
-				FVector TargetLocation = FVector(HitResults.ImpactPoint.X, HitResults.ImpactPoint.Y, 0.0);
-
-				FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, 100);
-				
-				CameraBoom->SetWorldLocation(NewLocation);
-			}
-
-		}
-	}*/
-
 }
 
 // Called to bind functionality to input
@@ -124,8 +102,6 @@ void APathfinderCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void APathfinderCharacter::MouseClick(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Display, TEXT("Click click click"));
-
 	if (PlayerController)
 	{
 		// Capture mouse down location
@@ -152,7 +128,4 @@ void APathfinderCharacter::MouseClick(const FInputActionValue& Value)
 			TargetLocation = HitResults.ImpactPoint;
 		}
 	}
-
-	// Update target location
-
 }
